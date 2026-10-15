@@ -10,3 +10,6 @@
 [submodule "src/psi4polaritonic"]
 	path = src/psi4polaritonic
 	url = https://github.com/FoleyLab/psi4polaritonic.git
+[submodule "src/pdaggerq"]
+	path = src/pdaggerq
+	url = https://github.com/edeprince3/pdaggerq.git
