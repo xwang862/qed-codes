@@ -1,0 +1,12 @@
+# generated (rebuilt per machine)
+.pixi/
+build/
+install/
+hooks/
+logs/
+status.json
+STATUS.md
+__pycache__/
+*.pyc
+# smoke-test scratch (outputs that are not results/*.json)
+smoke/work/
