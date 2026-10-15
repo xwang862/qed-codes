@@ -9,7 +9,7 @@ S=$R/src/octopus
 CPP_FLAG=()
 if [ "$(uname -s)" = Darwin ]; then
   # Octopus preprocesses Fortran with GNU cpp; the env's plain `cpp` is clang's, the gfortran toolchain's is GNU
-  CPP_FLAG=(-DCPP_EXECUTABLE="$(ls "$CONDA_PREFIX"/bin/*-apple-darwin*-cpp | head -1)")
+  CPP_FLAG=(-DCPP_EXECUTABLE="$(ls "$CONDA_PREFIX"/bin/ | /usr/bin/grep -E "apple-darwin[0-9.]*-cpp$" | sed "s|^|$CONDA_PREFIX/bin/|" | head -1)")
 fi
 cmake -S "$S" -B "$R/build/octopus" -G Ninja \
   -DCMAKE_BUILD_TYPE=Release -DOCTOPUS_DEBUG=OFF -DOCTOPUS_MPI=OFF -DOCTOPUS_OpenMP=OFF \
