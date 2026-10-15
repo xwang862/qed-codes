@@ -11,6 +11,10 @@ defaults:
   container: { runtime: colima 0.10.3 (vz, arm64), base_image: "ubuntu:24.04@sha256:534baea6a22c03a63003dbc8dbe78fe34bc0d7e595d9a9dc9834884ff530eb55" }
   pixi: 0.82.0
   build_policy: out of tree in build/<code>; codes that write into their source tree (qed-ci, pdaggerq, eT) are rsync-copied to build/<code>/ first
+  env_pins:
+    qed-psi4: psi4 ==1.10.2 (py3.11), einsums ==1.1.5 (1.1.6 lacks einsums::random_engine needed by psi4 1.10.2's core.so), libxc-c ==7.0.0 (as in hilbert-dev)
+    qed-pyscf: pyscf ==2.11.0 (py3.12), numpy <2.4 (stock pyscf 2.11.0 lib.einsum expects 4-tuples from numpy.einsum_path; numpy >= 2.4 returns 3)
+    qed-linux: gcc/gxx/gfortran 14.*, cmake <4, binutils (unprefixed ar)
   pythonpath: per-feature activation scripts scripts/activate/<code>.sh (pixi keeps only one value when several features set the same activation.env key, so [feature.X.activation.env] PYTHONPATH cannot be composed)
 
 codes:
@@ -32,7 +36,7 @@ codes:
     rebuild_when: pixi.lock changes psi4 (plugin ABI) -- rerun build-hilbert
     qed_methods: [QED-RHF/UHF/ROHF, QED-RKS/UKS, QED-TDDFT/RPA/TDA, QED-CIS, QED-CCSD (uccsd), QED response/CPHF, QED-SCF/DFT gradients, "TA: QED-CCSD-21, QED-CCSD-22, QED-EOM-EE-CCSD-21"]
     conventions: length gauge; coherent-state basis (USE_COHERENT_STATE_BASIS, default true); N_PHOTON_STATES truncation; DSE with quadrupole/dipole-squared switch; CAVITY_FREQUENCY, CAVITY_COUPLING_STRENGTH (3-vector)
-    status: pending
+    status: built (Release, WITH_TA); own test qed_ccsd_ta-1 passed; smoke passed (2026-10-15)
     notes: README targets a Psi4 source build (v1.9.1 docs); BUILD_MACOS.md documents conda Psi4 1.10-style builds. Pinned to psi4 1.10.2 (same as the hilbert-dev conda env).
 
   cqed-scf:
@@ -44,7 +48,7 @@ codes:
     test: pixi run -e qed-psi4 test-cqed-scf
     qed_methods: [CQED-RHF, CQED-RKS, CQED-UHF, analytic gradients, QED-CIS (Davidson), QED-SAPT0, MD/geometry optimisation]
     conventions: length gauge, coherent-state basis, DSE included
-    status: pending
+    status: own tests (lambda-zero regression, Cartesian projection: 6 passed); smoke passed (2026-10-15)
     notes: pip-installable, but NOT an editable pypi dependency here because the repo tracks src/cqed_scf.egg-info,
       which an editable install rewrites (modifying the submodule). Its deps (numpy>=2, opt_einsum) come from conda.
 
@@ -58,7 +62,7 @@ codes:
     runtime: PYTHONPATH build/qed-ci/src
     qed_methods: [CQED-RHF reference, QED-CIS, QED-CASCI, QED-FCI, SA-QED-CASSCF, analytic gradients]
     conventions: length gauge; coherent-state or photon-number basis; number_of_photons truncation
-    status: pending
+    status: built (Accelerate); own test test_lih_fci_sto3g_rdm_builds_no_cavity passed; smoke passed (2026-10-15)
     notes: uses stock Psi4 (not a fork), so it shares the env with hilbert. The repo ships prebuilt .o/.so files; they are rebuilt in the copy.
 
   psi4polaritonic:
@@ -71,7 +75,7 @@ codes:
     runtime: PYTHONPATH src/psi4polaritonic
     qed_methods: [CQED-RHF, CS-CQED-CIS]
     conventions: length gauge, coherent-state basis, DSE included
-    status: pending
+    status: CQED_RHF.py example passed (matches its reference); smoke passed (2026-10-15)
 
   pdaggerq:
     url: https://github.com/edeprince3/pdaggerq
@@ -82,7 +86,7 @@ codes:
     test: pixi run -e qed-psi4 test-pdaggerq
     runtime: PYTHONPATH build/pdaggerq/src
     qed_methods: [symbolic generator for QED-CC (qed_ccsd_21, qed_ccsd_22) and EOM-QED-CC equations; no numerical QED-HF]
-    status: pending
+    status: built; examples ccsd_energy.py and qed_ccsd_21.py ran; smoke (symbolic) passed (2026-10-15)
     notes: not on PyPI; setup.py builds in the source tree, hence the copy
 
   OpenMS:
@@ -94,7 +98,7 @@ codes:
     test: pixi run -e qed-pyscf test-openms
     qed_methods: [QED-RHF (coherent state or Fock photon basis), SC-QED-HF, VT-QED-HF, squeezed QED-HF, multi-state QED-HF, QED-FCI (electron-boson), AFQMC with photons]
     conventions: length gauge; H = H_e + w b+b + sqrt(w/2) (lambda.D)(b+ + b) + 1/2 (lambda.D)^2; D includes the nuclear dipole by default; coherent state by default (use_cs); nboson_states truncation (default 1)
-    status: pending
+    status: own test tests/qedhf/01-qed_hf.py passed (2/2); smoke passed (2026-10-15)
     notes: QED-CCSD module is broken in the public tree (imports cqcpy and a missing epcc_equations). PySCF 2.11.0 from conda-forge. The PyPI name `openms` is an unrelated package.
 
   eT:
@@ -111,7 +115,7 @@ codes:
     test: pixi run -e qed-compiled test-et (ctest -R <shortest QED test>)
     qed_methods: [QED-HF, SC-QED-HF, TD-QED-HF (RPA/TDA), SC-QED-HF linear response, QED-CCSD (GS, EOM, transition strengths, densities, gradients, real time), QED-FCI, QED-CASCI]
     conventions: length gauge; coherent-state QED-HF; DSE included (optional quadrupole oei); coupling g = lambda sqrt(w/2) (d.e); `boson states` truncation (default 1); input block `- boson` (modes, boson states, frequency, coupling, polarization)
-    status: pending
+    status: built (libcint static, --int32, OpenBLAS, no OpenMP on macOS); ctest qed_hf_polarization + sc_qed_hf passed; smoke passed (2026-10-15)
     notes: setup.py autogenerates files in src/, hence the copy. --int32 because ILP64 BLAS from conda-forge is unproven here.
 
   octopus:
@@ -127,7 +131,7 @@ codes:
     test: pixi run -e qed-compiled test-octopus (shipped QEDFT tests from testsuite/functionals)
     qed_methods: [real-space QEDFT, photon OEP/KLI, photon-free pxLDA, Casida and Sternheimer with photons, dressed RDMFT/HF, Maxwell-Kohn-Sham]
     conventions: no Gaussian-basis QED-HF; %PhotonModes block (omega | lambda | polarization), atomic units by default
-    status: pending
+    status: built (serial, SPARSKIT off); ctest functionals/17-oep-photons + 21-qedft-breit-3d passed; smoke passed (2026-10-15)
 
   exachem:
     url: https://github.com/ExaChem/exachem
@@ -143,7 +147,7 @@ codes:
     test: pixi run exachem-run (mpirun -n 2)
     qed_methods: [QED-HF, QED-DFT, closed-shell CD QED-CCSD (up to 2 photons), open-shell QED-CCSD]
     conventions: length gauge only, single cavity mode; SCF keys qed_omegas, qed_lambdas (or qed_volumes), qed_polvecs; no QED-EOM
-    status: pending
+    status: building in the container (2026-10-15)
 
   TAMM:
     url: https://github.com/NWChemEx/TAMM
@@ -152,4 +156,4 @@ codes:
     license: Apache-2.0
     build: part of exachem-build
     qed_methods: []
-    status: pending
+    status: building in the container (2026-10-15)
