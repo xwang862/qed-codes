@@ -71,7 +71,7 @@ def run(args):
     if st.get(args.step, {}).get("state") == "passed" and not args.force:
         print("skip %s (already passed)" % args.step, flush=True)
         return 0
-    cmd = args.command[1:] if args.command[:1] == ["--"] else args.command
+    cmd = args.command
     log = os.path.join(ROOT, "logs", args.step + ".log")
     t0 = time.time()
     with open(log, "w", buffering=1) as fh:
@@ -99,14 +99,21 @@ def main():
     r.add_argument("--est", type=float, default=None)
     r.add_argument("--force", action="store_true")
     r.add_argument("--note", default=None)
-    r.add_argument("command", nargs=argparse.REMAINDER)
     m = sub.add_parser("mark")
     m.add_argument("step")
     m.add_argument("state")
     m.add_argument("--note", default=None)
     sub.add_parser("show")
-    args = ap.parse_args()
+    argv = sys.argv[1:]
+    cmd = []
+    if "--" in argv:                                   # everything after the first -- is the command
+        i = argv.index("--")
+        argv, cmd = argv[:i], argv[i + 1:]
+    args = ap.parse_args(argv)
+    args.command = cmd
     if args.what == "run":
+        if not cmd:
+            ap.error("run needs a command after --")
         sys.exit(run(args))
     if args.what == "mark":
         update(args.step, state=args.state, note=args.note)
