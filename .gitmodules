@@ -25,3 +25,6 @@
 [submodule "src/exachem"]
 	path = src/exachem
 	url = https://github.com/ExaChem/exachem.git
+[submodule "src/TAMM"]
+	path = src/TAMM
+	url = https://github.com/NWChemEx/TAMM.git
