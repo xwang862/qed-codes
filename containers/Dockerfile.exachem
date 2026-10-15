@@ -1,0 +1,14 @@
+# Minimal image for the qed-linux pixi environment (ExaChem + TAMM): pinned Ubuntu + pinned pixi.
+# Compilers, MPI, CMake and BLAS come from conda-forge through pixi (pixi.lock), not from apt.
+FROM ubuntu:24.04@sha256:534baea6a22c03a63003dbc8dbe78fe34bc0d7e595d9a9dc9834884ff530eb55
+ARG PIXI_VERSION=0.82.0
+RUN apt-get update \
+ && apt-get install -y --no-install-recommends ca-certificates curl git \
+ && rm -rf /var/lib/apt/lists/*
+RUN curl -fsSL "https://github.com/prefix-dev/pixi/releases/download/v${PIXI_VERSION}/pixi-$(uname -m)-unknown-linux-musl.tar.gz" \
+    | tar -xz -C /usr/local/bin \
+ && pixi --version
+# Linux environments live on a named volume (/pixi-envs), never in the Mac's .pixi/ (the project is bind-mounted read-only).
+RUN mkdir -p /root/.pixi && printf 'detached-environments = "/pixi-envs"\n' > /root/.pixi/config.toml
+ENV PIXI_NO_TELEMETRY=1 OMP_NUM_THREADS=1
+WORKDIR /qed-codes
