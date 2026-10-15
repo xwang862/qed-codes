@@ -34,3 +34,6 @@
 [submodule "src/deps/liblbfgs"]
 	path = src/deps/liblbfgs
 	url = https://github.com/edeprince3/liblbfgs.git
+[submodule "src/deps/libcint"]
+	path = src/deps/libcint
+	url = https://github.com/sunqm/libcint.git
