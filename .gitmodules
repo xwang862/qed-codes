@@ -4,3 +4,6 @@
 [submodule "src/cqed-scf"]
 	path = src/cqed-scf
 	url = https://github.com/FoleyLab/cqed-scf.git
+[submodule "src/qed-ci"]
+	path = src/qed-ci
+	url = https://github.com/FoleyLab/qed-ci.git
