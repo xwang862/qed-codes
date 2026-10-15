@@ -13,3 +13,6 @@
 [submodule "src/pdaggerq"]
 	path = src/pdaggerq
 	url = https://github.com/edeprince3/pdaggerq.git
+[submodule "src/OpenMS"]
+	path = src/OpenMS
+	url = https://github.com/lanl/OpenMS.git
