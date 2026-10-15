@@ -6,6 +6,7 @@ set -euo pipefail
 R=${PIXI_PROJECT_ROOT:?run through pixi}
 CC=${CC:-cc}; CXX=${CXX:-c++}; FC=${FC:-gfortran}     # conda-forge compilers no longer export these
 S=$R/src/octopus
+# SPARSKIT lookup disabled: on macOS FindSPARSKIT matches the SDK's unrelated libskit.tbd (link fails)
 CPP_FLAG=()
 if [ "$(uname -s)" = Darwin ]; then
   # Octopus preprocesses Fortran with GNU cpp; the env's plain `cpp` is clang's, the gfortran toolchain's is GNU
@@ -18,6 +19,7 @@ cmake -S "$S" -B "$R/build/octopus" -G Ninja \
   -DFETCHCONTENT_SOURCE_DIR_SPGLIB="$S/third_party/Spglib" \
   -DFETCHCONTENT_TRY_FIND_PACKAGE_MODE=NEVER \
   -DFETCHCONTENT_FULLY_DISCONNECTED=ON \
+  -DCMAKE_DISABLE_FIND_PACKAGE_SPARSKIT=ON \
   -DCMAKE_C_COMPILER="$CC" -DCMAKE_CXX_COMPILER="$CXX" -DCMAKE_Fortran_COMPILER="$FC" "${CPP_FLAG[@]}"
 cmake --build "$R/build/octopus" -j "${JOBS:-6}"
 cmake --install "$R/build/octopus"
