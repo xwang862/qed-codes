@@ -33,7 +33,7 @@ platforms = ["osx-arm64", "linux-64"]
 [feature.pyscf.dependencies]
 python = "3.12.*"
 pyscf = "==2.11.0"
-numpy = ">=2,<3"
+numpy = ">=2,<2.4"       # stock pyscf 2.11.0 lib.einsum unpacks 4-tuples from numpy.einsum_path; numpy >=2.4 returns 3
 scipy = "*"
 h5py = "*"
 pytest = "*"
