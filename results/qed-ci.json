@@ -1,0 +1,58 @@
+{
+ "code": "qed-ci",
+ "commit": "747212217d41ae86d58196d9c50cfce28ef286cb",
+ "env": "qed-psi4",
+ "method": "CQED-RHF + QED-FCI (1 photon, coherent-state basis)",
+ "basis": "sto-3g",
+ "geometry_bohr": [
+  [
+   "O",
+   [
+    0.0,
+    0.0,
+    -0.12407017295558785
+   ]
+  ],
+  [
+   "H",
+   [
+    0.0,
+    -1.4312142200120124,
+    0.9845418400033167
+   ]
+  ],
+  [
+   "H",
+   [
+    0.0,
+    1.4312142200120124,
+    0.9845418400033167
+   ]
+  ]
+ ],
+ "lambda": [
+  0.0,
+  0.0,
+  0.05
+ ],
+ "omega": 0.5,
+ "e_hf": -74.9586437775711,
+ "e_tot": -75.00899929583707,
+ "extra": {
+  "e_rhf": -74.96305550406085,
+  "cqed_reference_energy": NaN,
+  "ci_roots": [
+   -75.00899929583707,
+   -74.6110780101806
+  ]
+ },
+ "conventions": {
+  "gauge": "length",
+  "reference": "coherent-state QED-RHF",
+  "dse": "included",
+  "coupling": "lambda vector in a.u.; omega enters the photon term of the CI",
+  "photons": "number_of_photons = 1 (photon states 0, 1) in the coherent-state basis"
+ },
+ "notes": "No QED-CCSD in qed-ci; e_tot is QED-FCI (full CI in all 7 orbitals x photon 0/1).",
+ "date": "2026-10-15 15:37:22"
+}

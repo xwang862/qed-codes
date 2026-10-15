@@ -1,0 +1,77 @@
+{
+ "code": "pdaggerq",
+ "commit": "05b6fca4d3dd89be96d3548830bd498145b2f97a",
+ "env": "qed-psi4",
+ "method": "symbolic QED-CCSD-21 equations (examples/qed_ccsd_21.py)",
+ "basis": "sto-3g",
+ "geometry_bohr": [
+  [
+   "O",
+   [
+    0.0,
+    0.0,
+    -0.12407017295558785
+   ]
+  ],
+  [
+   "H",
+   [
+    0.0,
+    -1.4312142200120124,
+    0.9845418400033167
+   ]
+  ],
+  [
+   "H",
+   [
+    0.0,
+    1.4312142200120124,
+    0.9845418400033167
+   ]
+  ]
+ ],
+ "lambda": [
+  0.0,
+  0.0,
+  0.05
+ ],
+ "omega": 0.5,
+ "e_hf": null,
+ "e_tot": null,
+ "extra": {
+  "terms_per_equation": {
+   "energy": 16,
+   "cenergy": 1,
+   "rt1_aa": 18,
+   "rt1_bb": 18,
+   "crt1_aa": 1,
+   "crt1_bb": 1,
+   "rt2_aaaa": 29,
+   "rt2_abab": 56,
+   "rt2_bbbb": 29,
+   "crt2_aaaa": 1,
+   "crt2_abab": 1,
+   "crt2_bbbb": 1,
+   "rt0_1": 13,
+   "crt0_1": 1,
+   "rt1_1_aa": 33,
+   "rt1_1_bb": 33,
+   "crt1_1_aa": 0,
+   "crt1_1_bb": 0,
+   "rt2_1_aaaa": 57,
+   "rt2_1_abab": 119,
+   "rt2_1_bbbb": 57,
+   "crt2_1_aaaa": 0,
+   "crt2_1_abab": 0,
+   "crt2_1_bbbb": 0
+  },
+  "output": "smoke/work/pdaggerq/qed_ccsd_21.out"
+ },
+ "conventions": {
+  "gauge": "length (operators w0, d+, d- = bilinear coupling, f, v)",
+  "reference": "coherent-state style: 'd-' is the dipole fluctuation term",
+  "photons": "QED-CCSD-21: t0_1p, t1_1p, t2_1p one-photon amplitudes"
+ },
+ "notes": "No numbers: pdaggerq derives equations only (no Gaussian-basis QED-HF).",
+ "date": "2026-10-15 15:39:43"
+}
