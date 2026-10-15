@@ -40,12 +40,13 @@ codes:
     pin: 7f2f82ff606e2335292c9417b97e403af22c3ef9     # main, 2026-10-10
     env: qed-psi4
     license: GPL-3.0 (LICENSE file; pyproject.toml says MIT)
-    build: editable pypi path dependency (pure Python)
+    build: none (pure Python); PYTHONPATH src/cqed-scf/src via scripts/activate/cqed-scf.sh
     test: pixi run -e qed-psi4 test-cqed-scf
     qed_methods: [CQED-RHF, CQED-RKS, CQED-UHF, analytic gradients, QED-CIS (Davidson), QED-SAPT0, MD/geometry optimisation]
     conventions: length gauge, coherent-state basis, DSE included
     status: pending
-    notes: editable install leaves an untracked *.egg-info in the submodule (ignore = untracked in .gitmodules)
+    notes: pip-installable, but NOT an editable pypi dependency here because the repo tracks src/cqed_scf.egg-info,
+      which an editable install rewrites (modifying the submodule). Its deps (numpy>=2, opt_einsum) come from conda.
 
   qed-ci:
     url: https://github.com/FoleyLab/qed-ci      # fork of mapol-chem/qed-ci, 84 commits ahead / 0 behind upstream main (chosen 2026-10-15)

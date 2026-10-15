@@ -101,8 +101,8 @@ depends-on = ["build-hilbert"]
 platforms = ["osx-arm64", "linux-64"]
 [feature.cqed-scf.dependencies]
 opt_einsum = "*"
-[feature.cqed-scf.pypi-dependencies]
-cqed-scf = { path = "src/cqed-scf", editable = true }
+[feature.cqed-scf.activation]
+scripts = ["scripts/activate/cqed-scf.sh"]   # PYTHONPATH, not an editable install: the repo tracks its egg-info
 [feature.cqed-scf.tasks.test-cqed-scf]
 cmd = "bash scripts/test/cqed-scf.sh"
 
