@@ -8,4 +8,9 @@ rm -rf "$W"; mkdir -p "$W"; cd "$W"
 export OMP_NUM_THREADS=1
 cp "$R/src/exachem/inputs/ci/h2o_qed.json" .
 mpirun -n 2 "${EXACHEM_WORK:-/work}/install/exachem/bin/ExaChem" h2o_qed.json
-python "$R/src/exachem/ci/scripts/compare_results.py" "$R/src/exachem/ci/reference_output/" . || echo "compare_results.py exit $?"
+# compare_results.py compares every reference in a directory with same-named files in another: give it only the
+# h2o_qed reference and the directory where ExaChem wrote its output JSON (<prefix>_files/<scf_type>/json/)
+cur=$(dirname "$(find . -name 'h2o_qed.cc-pvtz.ccsd.json' | head -1)")
+mkdir -p ref && cp "$R/src/exachem/ci/reference_output/h2o_qed.cc-pvtz.ccsd.json" ref/
+python "$R/src/exachem/ci/scripts/compare_results.py" ref "$cur"
+echo "compare_results.py: h2o_qed.cc-pvtz.ccsd matches the reference"
