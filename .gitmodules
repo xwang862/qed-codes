@@ -1,3 +1,6 @@
 [submodule "src/hilbert"]
 	path = src/hilbert
 	url = https://github.com/edeprince3/hilbert.git
+[submodule "src/cqed-scf"]
+	path = src/cqed-scf
+	url = https://github.com/FoleyLab/cqed-scf.git
