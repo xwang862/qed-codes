@@ -16,3 +16,6 @@
 [submodule "src/OpenMS"]
 	path = src/OpenMS
 	url = https://github.com/lanl/OpenMS.git
+[submodule "src/eT"]
+	path = src/eT
+	url = https://gitlab.com/eT-program/eT.git
