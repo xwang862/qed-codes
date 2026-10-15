@@ -7,3 +7,6 @@
 [submodule "src/qed-ci"]
 	path = src/qed-ci
 	url = https://github.com/FoleyLab/qed-ci.git
+[submodule "src/psi4polaritonic"]
+	path = src/psi4polaritonic
+	url = https://github.com/FoleyLab/psi4polaritonic.git
