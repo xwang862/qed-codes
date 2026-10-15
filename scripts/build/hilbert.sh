@@ -12,6 +12,8 @@ JOBS=${JOBS:-6}
 EXTRA_CXX=""
 if [ "$(uname -s)" = Darwin ]; then
   EXTRA_CXX="-stdlib=libc++ -D_LIBCPP_ENABLE_CXX20_REMOVED_SHARED_PTR_UNIQUE"   # as in hilbert's BUILD_MACOS.md
+  # BTAS (fetched by TiledArray) specializes std::make_unsigned; clang >= 21 rejects that by default
+  EXTRA_CXX="$EXTRA_CXX -Wno-invalid-specialization"
 fi
 mkdir -p "$B"
 echo "== configure ($(date))"

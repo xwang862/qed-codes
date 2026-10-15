@@ -15,6 +15,6 @@ fi
 cd "$B/src"
 python ./setup.py "$B/build" -clean -type Release -int-lib libcint -lc "$R/install/libcint" --int32 $OMP \
   --blas-type OPENBLAS -FC "$FC" -CC "$CC" -CXX "$CXX" \
-  -cmake-flags "-DCMAKE_PREFIX_PATH=$CONDA_PREFIX"
+  "-cmake-flags=-DCMAKE_PREFIX_PATH=$CONDA_PREFIX"
 cmake --build "$B/build" -j "${JOBS:-6}"
 ls -l "$B/build/eT" "$B/build/eT_launch.py" 2>/dev/null || ls -l "$B/build" | head

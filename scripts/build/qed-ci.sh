@@ -10,6 +10,8 @@ rsync -a --delete --exclude .git "$R/src/qed-ci/" "$B/"
 cd "$B"
 rm -f src/*.o src/cfunctions.so
 if [ "$(uname -s)" = Darwin ]; then
+  # conda clang needs the macOS SDK; CMake finds it on its own, plain make does not (xcrun is unusable here)
+  export SDKROOT=${SDKROOT:-$(xcrun --sdk macosx --show-sdk-path 2>/dev/null || echo /Library/Developer/CommandLineTools/SDKs/MacOSX.sdk)}
   make CC="$CC" BACKEND=accelerate
 else
   make CC="$CC" BACKEND=openblas OPENBLAS_PREFIX="$CONDA_PREFIX"
