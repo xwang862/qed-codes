@@ -7,6 +7,11 @@ R=${PIXI_PROJECT_ROOT:?run through pixi}
 W=${EXACHEM_WORK:-/work}
 P=$W/install/exachem
 export CC=gcc CXX=g++ FC=gfortran
+command -v ar >/dev/null || { echo "no ar on PATH (binutils missing from the qed-linux env?)"; exit 1; }
+if [ "${EXACHEM_CLEAN:-0}" = 1 ]; then
+  echo "== EXACHEM_CLEAN=1: removing $W/build/tamm $W/build/exachem $P"
+  rm -rf "$W/build/tamm" "$W/build/exachem" "$P"
+fi
 FLAGS=(-DCMAKE_INSTALL_PREFIX="$P" -DMODULES="CC" -DCMSB_TAG=v0.1.0 -DALLOW_CONDA=ON
        -DLINALG_VENDOR=OpenBLAS -DCMAKE_BUILD_TYPE=Release -DBUILD_TESTS=OFF)
 echo "== TAMM ($(date))"
