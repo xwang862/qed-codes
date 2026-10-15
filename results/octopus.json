@@ -1,0 +1,62 @@
+{
+ "code": "octopus",
+ "commit": "3819069c1341e38e3dd4b2a4285f83eff3cfba36",
+ "env": "qed-compiled",
+ "method": "QEDFT pxLDA (package example 21-qedft-breit-3d.01-pxlda-hydrogen, H atom)",
+ "basis": "sto-3g",
+ "geometry_bohr": [
+  [
+   "O",
+   [
+    0.0,
+    0.0,
+    -0.12407017295558785
+   ]
+  ],
+  [
+   "H",
+   [
+    0.0,
+    -1.4312142200120124,
+    0.9845418400033167
+   ]
+  ],
+  [
+   "H",
+   [
+    0.0,
+    1.4312142200120124,
+    0.9845418400033167
+   ]
+  ]
+ ],
+ "lambda": [
+  0.0,
+  0.0,
+  0.05
+ ],
+ "omega": 0.5,
+ "e_hf": null,
+ "e_tot": -0.44049676,
+ "extra": {
+  "values": {
+   "total": -0.44049676,
+   "eigenvalues": -0.62350605,
+   "photon_ex": 0.04482205
+  },
+  "testsuite_reference": {
+   "total": -0.44049659,
+   "eigenvalues": -0.62350605,
+   "photon_ex": 0.04482205
+  },
+  "system": "H atom, Radius 10, Spacing 0.5, omega 0.374501, lambda 0.5 x"
+ },
+ "conventions": {
+  "gauge": "length (dipole), photon-free QEDFT",
+  "reference": "Kohn-Sham with photon exchange pxLDA (no Hartree for 1 e-)",
+  "coupling": "%PhotonModes: omega | lambda | polarization (a.u.)",
+  "photons": "photon-free functional (no explicit photon states)"
+ },
+ "notes": "Not the common H2O case: Octopus is real-space QEDFT without Gaussian-basis QED-HF. e_tot = Kohn-Sham total energy.",
+ "date": "2026-10-15 15:55:55"
+}

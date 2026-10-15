@@ -150,7 +150,7 @@ codes:
     test: pixi run exachem-run (mpirun -n 2)
     qed_methods: [QED-HF, QED-DFT, closed-shell CD QED-CCSD (up to 2 photons), open-shell QED-CCSD]
     conventions: length gauge only, single cavity mode; SCF keys qed_omegas, qed_lambdas (or qed_volumes), qed_polvecs; no QED-EOM
-    status: building in the container (2026-10-15)
+    status: built in the linux-aarch64 container (Release, OpenBLAS, MPICH, gcc 14.4); own test inputs/ci/h2o_qed.json matches the reference to 1.4e-13 (mpirun -n 2, --shm-size=4g); smoke passed (2026-10-15)
 
   TAMM:
     url: https://github.com/NWChemEx/TAMM
@@ -159,4 +159,4 @@ codes:
     license: Apache-2.0
     build: part of exachem-build
     qed_methods: []
-    status: building in the container (2026-10-15)
+    status: built in the linux-aarch64 container (Release, OpenBLAS, MPICH, gcc 14.4); own test inputs/ci/h2o_qed.json matches the reference to 1.4e-13 (mpirun -n 2, --shm-size=4g); smoke passed (2026-10-15)
