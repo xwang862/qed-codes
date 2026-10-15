@@ -22,3 +22,6 @@
 [submodule "src/octopus"]
 	path = src/octopus
 	url = https://gitlab.com/octopus-code/octopus.git
+[submodule "src/exachem"]
+	path = src/exachem
+	url = https://github.com/ExaChem/exachem.git
