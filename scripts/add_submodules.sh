@@ -26,4 +26,8 @@ add eT              https://gitlab.com/eT-program/eT.git               v2.6.1
 add octopus         https://gitlab.com/octopus-code/octopus.git        16.4
 add exachem         https://github.com/ExaChem/exachem.git             v0.1.0
 add TAMM            https://github.com/NWChemEx/TAMM.git               v0.1.0
+# build-time dependencies pinned here instead of fetched (hilbert FetchContent overrides; eT needs a static PYPZPX libcint)
+add deps/libsdp      https://github.com/edeprince3/libsdp.git           5c17c758ef99a128a54e92c60c1404ebb063e809
+add deps/liblbfgs    https://github.com/edeprince3/liblbfgs.git         690a4c367019df5f5317d2b94978bb8312714f53
+add deps/libcint     https://github.com/sunqm/libcint.git               v6.1.3
 echo "all submodules added"
