@@ -1,0 +1,3 @@
+[submodule "src/hilbert"]
+	path = src/hilbert
+	url = https://github.com/edeprince3/hilbert.git
