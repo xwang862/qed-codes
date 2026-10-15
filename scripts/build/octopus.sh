@@ -22,5 +22,8 @@ cmake -S "$S" -B "$R/build/octopus" -G Ninja \
   -DCMAKE_DISABLE_FIND_PACKAGE_SPARSKIT=ON \
   -DCMAKE_C_COMPILER="$CC" -DCMAKE_CXX_COMPILER="$CXX" -DCMAKE_Fortran_COMPILER="$FC" "${CPP_FLAG[@]}"
 cmake --build "$R/build/octopus" -j "${JOBS:-6}"
+# Octopus collects all Fortran modules in fortran_mods/, but libxc's install rule expects its .mod files in its
+# own build dir: copy them there (build tree only) so that `cmake --install` completes
+cp "$R/build/octopus/fortran_mods"/xc_f*.mod "$R/build/octopus/_deps/libxc-build/" 2>/dev/null || true
 cmake --install "$R/build/octopus"
 ls -l "$R/install/octopus/bin/octopus"
