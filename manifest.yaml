@@ -1,0 +1,154 @@
+# External ab initio cavity-QED codes (install + smoke test; comparison with qedpy comes later).
+# Sources: git submodules in src/ pinned to `pin` (git clone --recursive, or scripts/fetch_all.sh).
+# Environments: pixi.toml. Builds: `python3 scripts/job.py run <step> -- pixi run -e <env> <task>`.
+# Status of each step: STATUS.md / status.json (generated, not tracked). `status` below is the last
+# recorded outcome and is updated by hand after each build/test.
+#
+# Conventions recorded per code: gauge, reference (coherent state or not), dipole self-energy (DSE),
+# coupling definition, photon truncation.
+
+defaults:
+  container: { runtime: colima 0.10.3 (vz, arm64), base_image: "ubuntu:24.04@sha256:534baea6a22c03a63003dbc8dbe78fe34bc0d7e595d9a9dc9834884ff530eb55" }
+  pixi: 0.82.0
+  build_policy: out of tree in build/<code>; codes that write into their source tree (qed-ci, pdaggerq, eT) are rsync-copied to build/<code>/ first
+  pythonpath: per-feature activation scripts scripts/activate/<code>.sh (pixi keeps only one value when several features set the same activation.env key, so [feature.X.activation.env] PYTHONPATH cannot be composed)
+
+codes:
+  hilbert:
+    url: https://github.com/edeprince3/hilbert
+    pin: 5d29fcd5d535fe9348e7af1108ad8cb34a54aa75     # master, 2026-08-18 (no tags)
+    env: qed-psi4
+    license: GPL-3.0 (headers say LGPL-3.0+)
+    build: >-
+      pixi run -e qed-psi4 build-hilbert  (scripts/build/hilbert.sh: cmake -C $CONDA_PREFIX/share/cmake/psi4/psi4PluginCache.cmake
+      -DWITH_TA=ON -DCMAKE_BUILD_TYPE=Release, MPI compiler wrappers, Ninja, -B build/hilbert/objdir; then
+      build/hilbert/pkg/hilbert/ = symlinks to __init__.py, pymodule.py and the built hilbert.so)
+    build_deps_pinned:
+      libsdp: src/deps/libsdp @ 5c17c758ef99a128a54e92c60c1404ebb063e809 (FETCHCONTENT_SOURCE_DIR_LIBSDP_EXTERNAL)
+      liblbfgs: src/deps/liblbfgs @ 690a4c367019df5f5317d2b94978bb8312714f53 (upstream fetch has no GIT_TAG; FETCHCONTENT_SOURCE_DIR_LIBLBFGS_EXTERNAL)
+      fetched_at_build_time: TiledArray @ 248f85ce93e35d7e5326f35daceb4c262987c167 (+ its MADNESS/BTAS/Umpire pins); pybind11 v2.11.1 (via libsdp)
+    test: pixi run -e qed-psi4 test-hilbert
+    runtime: PYTHONPATH build/hilbert/pkg (scripts/activate/hilbert.sh); `import hilbert`
+    rebuild_when: pixi.lock changes psi4 (plugin ABI) -- rerun build-hilbert
+    qed_methods: [QED-RHF/UHF/ROHF, QED-RKS/UKS, QED-TDDFT/RPA/TDA, QED-CIS, QED-CCSD (uccsd), QED response/CPHF, QED-SCF/DFT gradients, "TA: QED-CCSD-21, QED-CCSD-22, QED-EOM-EE-CCSD-21"]
+    conventions: length gauge; coherent-state basis (USE_COHERENT_STATE_BASIS, default true); N_PHOTON_STATES truncation; DSE with quadrupole/dipole-squared switch; CAVITY_FREQUENCY, CAVITY_COUPLING_STRENGTH (3-vector)
+    status: pending
+    notes: README targets a Psi4 source build (v1.9.1 docs); BUILD_MACOS.md documents conda Psi4 1.10-style builds. Pinned to psi4 1.10.2 (same as the hilbert-dev conda env).
+
+  cqed-scf:
+    url: https://github.com/FoleyLab/cqed-scf
+    pin: 7f2f82ff606e2335292c9417b97e403af22c3ef9     # main, 2026-10-10
+    env: qed-psi4
+    license: GPL-3.0 (LICENSE file; pyproject.toml says MIT)
+    build: editable pypi path dependency (pure Python)
+    test: pixi run -e qed-psi4 test-cqed-scf
+    qed_methods: [CQED-RHF, CQED-RKS, CQED-UHF, analytic gradients, QED-CIS (Davidson), QED-SAPT0, MD/geometry optimisation]
+    conventions: length gauge, coherent-state basis, DSE included
+    status: pending
+    notes: editable install leaves an untracked *.egg-info in the submodule (ignore = untracked in .gitmodules)
+
+  qed-ci:
+    url: https://github.com/FoleyLab/qed-ci      # fork of mapol-chem/qed-ci, 84 commits ahead / 0 behind upstream main (chosen 2026-10-15)
+    pin: 747212217d41ae86d58196d9c50cfce28ef286cb     # main, 2026-06-11
+    env: qed-psi4
+    license: GPL-3.0
+    build: pixi run -e qed-psi4 build-qed-ci (rsync src/qed-ci -> build/qed-ci, make there; macOS BACKEND=accelerate, Linux BACKEND=openblas)
+    test: pixi run -e qed-psi4 test-qed-ci
+    runtime: PYTHONPATH build/qed-ci/src
+    qed_methods: [CQED-RHF reference, QED-CIS, QED-CASCI, QED-FCI, SA-QED-CASSCF, analytic gradients]
+    conventions: length gauge; coherent-state or photon-number basis; number_of_photons truncation
+    status: pending
+    notes: uses stock Psi4 (not a fork), so it shares the env with hilbert. The repo ships prebuilt .o/.so files; they are rebuilt in the copy.
+
+  psi4polaritonic:
+    url: https://github.com/FoleyLab/psi4polaritonic
+    pin: 689bf14fd2d9c9f987956d42f8d0629968e9fa47     # main, 2022-02-18
+    env: qed-psi4
+    license: BSD-3-Clause
+    build: none (psi4numpy-style scripts)
+    test: pixi run -e qed-psi4 test-psi4polaritonic
+    runtime: PYTHONPATH src/psi4polaritonic
+    qed_methods: [CQED-RHF, CS-CQED-CIS]
+    conventions: length gauge, coherent-state basis, DSE included
+    status: pending
+
+  pdaggerq:
+    url: https://github.com/edeprince3/pdaggerq
+    pin: 05b6fca4d3dd89be96d3548830bd498145b2f97a     # master, 2026-10-15
+    env: qed-psi4
+    license: Apache-2.0
+    build: pixi run -e qed-psi4 build-pdaggerq (rsync to build/pdaggerq/src, setup.py build_ext --inplace there; fetches pybind11 v2.11.1)
+    test: pixi run -e qed-psi4 test-pdaggerq
+    runtime: PYTHONPATH build/pdaggerq/src
+    qed_methods: [symbolic generator for QED-CC (qed_ccsd_21, qed_ccsd_22) and EOM-QED-CC equations; no numerical QED-HF]
+    status: pending
+    notes: not on PyPI; setup.py builds in the source tree, hence the copy
+
+  OpenMS:
+    url: https://github.com/lanl/OpenMS
+    pin: 86ff94d051e00b1240e504c5fc4d80ceaa79bdcf     # main = develop, 2026-01-23 (package version 0.2.0; tags v0.1, openms.0.1.1 are older)
+    env: qed-pyscf
+    license: custom LANL/Triad notice (LANL-C23019), not OSI
+    build: editable pypi path dependency openms-qed (pure Python, BUILD_LIB unset)
+    test: pixi run -e qed-pyscf test-openms
+    qed_methods: [QED-RHF (coherent state or Fock photon basis), SC-QED-HF, VT-QED-HF, squeezed QED-HF, multi-state QED-HF, QED-FCI (electron-boson), AFQMC with photons]
+    conventions: length gauge; H = H_e + w b+b + sqrt(w/2) (lambda.D)(b+ + b) + 1/2 (lambda.D)^2; D includes the nuclear dipole by default; coherent state by default (use_cs); nboson_states truncation (default 1)
+    status: pending
+    notes: QED-CCSD module is broken in the public tree (imports cqcpy and a missing epcc_equations). PySCF 2.11.0 from conda-forge. The PyPI name `openms` is an unrelated package.
+
+  eT:
+    url: https://gitlab.com/eT-program/eT
+    pin: v2.6.1     # d551cfe2dd1e5690d8e812ece3ce69fbd6173b71, 2026-10-14
+    env: qed-compiled
+    license: GPL-3.0
+    build: >-
+      pixi run -e qed-compiled build-et (build-libcint first: src/deps/libcint static, -DPYPZPX=1 -DMIN_EXPCUTOFF=0.0;
+      then rsync src/eT -> build/eT/src, ./setup.py -int-lib libcint --int32 --blas-type OPENBLAS there, cmake --build)
+    build_deps_pinned:
+      libcint: src/deps/libcint @ v6.1.3 (c72d30662ba08048940c9000cc352a220c867712); conda-forge libcint is shared and lacks PYPZPX
+    nested_submodules: [submodules/runtest @ 645cb709, submodules/pFUnit @ 2cce6d25]
+    test: pixi run -e qed-compiled test-et (ctest -R <shortest QED test>)
+    qed_methods: [QED-HF, SC-QED-HF, TD-QED-HF (RPA/TDA), SC-QED-HF linear response, QED-CCSD (GS, EOM, transition strengths, densities, gradients, real time), QED-FCI, QED-CASCI]
+    conventions: length gauge; coherent-state QED-HF; DSE included (optional quadrupole oei); coupling g = lambda sqrt(w/2) (d.e); `boson states` truncation (default 1); input block `- boson` (modes, boson states, frequency, coupling, polarization)
+    status: pending
+    notes: setup.py autogenerates files in src/, hence the copy. --int32 because ILP64 BLAS from conda-forge is unproven here.
+
+  octopus:
+    url: https://gitlab.com/octopus-code/octopus
+    pin: "16.4"     # 3819069c1341e38e3dd4b2a4285f83eff3cfba36, 2026-09-24
+    env: qed-compiled
+    license: GPL-3.0
+    build: >-
+      pixi run -e qed-compiled build-octopus (cmake -G Ninja -B build/octopus, OCTOPUS_DEBUG=OFF, serial;
+      Libxc and Spglib from its own submodules via FETCHCONTENT_SOURCE_DIR_*; install to install/octopus)
+    nested_submodules: [third_party/Libxc, third_party/Spglib]
+    conda_forge: no octopus package (the anaconda.org `octopus` is an unrelated bioconda tool), so built from source
+    test: pixi run -e qed-compiled test-octopus (shipped QEDFT tests from testsuite/functionals)
+    qed_methods: [real-space QEDFT, photon OEP/KLI, photon-free pxLDA, Casida and Sternheimer with photons, dressed RDMFT/HF, Maxwell-Kohn-Sham]
+    conventions: no Gaussian-basis QED-HF; %PhotonModes block (omega | lambda | polarization), atomic units by default
+    status: pending
+
+  exachem:
+    url: https://github.com/ExaChem/exachem
+    pin: v0.1.0     # bec6f7f3ea09979332f903a3177763c2dac7d8ef
+    env: qed-linux (container)
+    license: Apache-2.0 (four PyBerny-derived files MPL-2.0)
+    build: >-
+      pixi run exachem-build on the host (containers/exachem.sh): in the container, TAMM then ExaChem with
+      -DCMSB_TAG=v0.1.0 -DALLOW_CONDA=ON -DMODULES=CC -DLINALG_VENDOR=OpenBLAS, build dir on a named volume
+    build_deps_pinned:
+      TAMM: src/TAMM @ v0.1.0 (e71357ad54f38748b4a7e175aa6760820d5ce96f)
+      fetched_at_build_time: CMakeBuild v0.1.0 (dep_versions.cmake pins GlobalArrays, HDF5 1.14.4.3, OpenBLAS, LAPACK, Eigen, Libint 2.11.2, Libecpint, GauXC (+ExchCXX, IntegratorXX, gau2grid, cereal, Libxc 7.0.0), json 3.12.0, spdlog 1.15.2, doctest 2.4.11, MSGSL, HPTT, numactl)
+    test: pixi run exachem-run (mpirun -n 2)
+    qed_methods: [QED-HF, QED-DFT, closed-shell CD QED-CCSD (up to 2 photons), open-shell QED-CCSD]
+    conventions: length gauge only, single cavity mode; SCF keys qed_omegas, qed_lambdas (or qed_volumes), qed_polvecs; no QED-EOM
+    status: pending
+
+  TAMM:
+    url: https://github.com/NWChemEx/TAMM
+    pin: v0.1.0     # e71357ad54f38748b4a7e175aa6760820d5ce96f
+    env: qed-linux (container)
+    license: Apache-2.0
+    build: part of exachem-build
+    qed_methods: []
+    status: pending

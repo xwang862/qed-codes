@@ -1,0 +1,214 @@
+# External ab initio cavity-QED codes for comparison with qedpy (see manifest.yaml, STATUS.md).
+#
+# Environments are compositions of one feature per code plus one base feature per stack:
+#   qed-psi4     = psi4 + hilbert + cqed-scf + qed-ci + psi4polaritonic + pdaggerq   (osx-arm64, linux-64)
+#   qed-pyscf    = pyscf + openms                                                    (osx-arm64, linux-64)
+#   qed-compiled = compiled + et + octopus                                           (osx-arm64, linux-64)
+#   qed-linux    = linux + exachem                     (linux-aarch64 container on the Mac, linux-64 cluster)
+# Sources are git submodules in src/ (git clone --recursive, or scripts/fetch_all.sh).
+# Builds are out of tree in build/<code>; codes that generate files in their source tree are copied there first.
+# Every build/test task is normally launched through scripts/job.py, which writes logs/ and the ledger.
+
+[workspace]
+name = "qed-codes"
+channels = ["conda-forge"]
+platforms = ["osx-arm64", "linux-aarch64", "linux-64"]
+requires-pixi = ">=0.82"
+
+# ---------------------------------------------------------------- base features (one per stack)
+[feature.psi4]
+platforms = ["osx-arm64", "linux-64"]
+[feature.psi4.dependencies]
+python = "3.11.*"
+psi4 = "==1.10.2"        # hilbert is built against this Psi4: rebuild hilbert whenever pixi.lock changes psi4
+numpy = ">=2,<3"
+scipy = "*"
+pytest = "*"
+rsync = "*"
+
+[feature.pyscf]
+platforms = ["osx-arm64", "linux-64"]
+[feature.pyscf.dependencies]
+python = "3.12.*"
+pyscf = "==2.11.0"
+numpy = ">=2,<3"
+scipy = "*"
+h5py = "*"
+pytest = "*"
+
+[feature.compiled]
+platforms = ["osx-arm64", "linux-64"]
+[feature.compiled.dependencies]
+python = "3.12.*"
+c-compiler = "*"
+cxx-compiler = "*"
+fortran-compiler = "*"
+cmake = ">=3.26,<4"
+ninja = "*"
+make = "*"
+pkg-config = "*"
+libblas = { version = "*", build = "*openblas" }
+liblapack = { version = "*", build = "*openblas" }
+openblas = "*"
+rsync = "*"
+
+[feature.linux]
+platforms = ["linux-aarch64", "linux-64"]
+[feature.linux.dependencies]
+python = "3.12.*"
+gcc = "14.*"
+gxx = "14.*"
+gfortran = "14.*"
+cmake = ">=3.26,<4"      # doctest 2.4.11 / gau2grid 2.0.6 (fetched by CMakeBuild) declare cmake_minimum_required < 3.5
+make = "*"
+ninja = "*"
+mpich = "*"
+openblas = "*"
+git = "*"
+autoconf = "*"
+automake = "*"
+libtool = "*"
+pkg-config = "*"
+perl = "*"
+
+# ---------------------------------------------------------------- qed-psi4 codes
+[feature.hilbert]
+platforms = ["osx-arm64", "linux-64"]
+[feature.hilbert.dependencies]
+c-compiler = "*"
+cxx-compiler = "*"
+fortran-compiler = "*"
+cmake = ">=3.26,<4"
+ninja = "*"
+pybind11 = "*"
+eigen = "*"
+libboost-devel = "*"
+openmpi = "*"
+mpi4py = "*"
+[feature.hilbert.activation]
+scripts = ["scripts/activate/hilbert.sh"]     # prepends to PYTHONPATH
+[feature.hilbert.tasks.build-hilbert]
+cmd = "bash scripts/build/hilbert.sh"
+inputs = ["scripts/build/hilbert.sh", "src/hilbert/**/*", "src/deps/libsdp/**/*", "src/deps/liblbfgs/**/*"]
+outputs = ["build/hilbert/pkg/hilbert/hilbert.so"]
+[feature.hilbert.tasks.test-hilbert]
+cmd = "bash scripts/test/hilbert.sh"
+depends-on = ["build-hilbert"]
+
+[feature.cqed-scf]
+platforms = ["osx-arm64", "linux-64"]
+[feature.cqed-scf.dependencies]
+opt_einsum = "*"
+[feature.cqed-scf.pypi-dependencies]
+cqed-scf = { path = "src/cqed-scf", editable = true }
+[feature.cqed-scf.tasks.test-cqed-scf]
+cmd = "bash scripts/test/cqed-scf.sh"
+
+[feature.qed-ci]
+platforms = ["osx-arm64", "linux-64"]
+[feature.qed-ci.dependencies]
+c-compiler = "*"
+make = "*"
+numba = "*"
+psutil = "*"
+memory_profiler = "*"
+[feature.qed-ci.activation]
+scripts = ["scripts/activate/qed-ci.sh"]     # prepends to PYTHONPATH
+[feature.qed-ci.tasks.build-qed-ci]
+cmd = "bash scripts/build/qed-ci.sh"
+inputs = ["scripts/build/qed-ci.sh", "src/qed-ci/src/*.c", "src/qed-ci/src/*.h", "src/qed-ci/src/*.py", "src/qed-ci/Makefile"]
+outputs = ["build/qed-ci/src/cfunctions.so"]
+[feature.qed-ci.tasks.test-qed-ci]
+cmd = "bash scripts/test/qed-ci.sh"
+depends-on = ["build-qed-ci"]
+
+[feature.psi4polaritonic]
+platforms = ["osx-arm64", "linux-64"]
+[feature.psi4polaritonic.activation]
+scripts = ["scripts/activate/psi4polaritonic.sh"]     # prepends to PYTHONPATH
+[feature.psi4polaritonic.tasks.test-psi4polaritonic]
+cmd = "bash scripts/test/psi4polaritonic.sh"
+
+[feature.pdaggerq]
+platforms = ["osx-arm64", "linux-64"]
+[feature.pdaggerq.dependencies]
+cxx-compiler = "*"
+cmake = ">=3.26,<4"
+setuptools = "*"
+[feature.pdaggerq.activation]
+scripts = ["scripts/activate/pdaggerq.sh"]     # prepends to PYTHONPATH
+[feature.pdaggerq.tasks.build-pdaggerq]
+cmd = "bash scripts/build/pdaggerq.sh"
+inputs = ["scripts/build/pdaggerq.sh", "src/pdaggerq/pdaggerq/**/*", "src/pdaggerq/CMakeLists.txt", "src/pdaggerq/setup.py"]
+outputs = ["build/pdaggerq/src/pdaggerq/_pdaggerq*.so"]
+[feature.pdaggerq.tasks.test-pdaggerq]
+cmd = "bash scripts/test/pdaggerq.sh"
+depends-on = ["build-pdaggerq"]
+
+# ---------------------------------------------------------------- qed-pyscf codes
+[feature.openms]
+platforms = ["osx-arm64", "linux-64"]
+[feature.openms.dependencies]
+matplotlib-base = "*"
+sphinx = "*"
+sphinx_rtd_theme = "*"
+sphinxcontrib-bibtex = "*"
+[feature.openms.pypi-dependencies]
+openms-qed = { path = "src/OpenMS", editable = true }   # never `pip install openms` (unrelated PyPI package)
+[feature.openms.tasks.test-openms]
+cmd = "bash scripts/test/openms.sh"
+
+# ---------------------------------------------------------------- qed-compiled codes
+[feature.et]
+platforms = ["osx-arm64", "linux-64"]
+[feature.et.tasks.build-libcint]
+cmd = "bash scripts/build/libcint.sh"
+inputs = ["scripts/build/libcint.sh", "src/deps/libcint/**/*"]
+outputs = ["install/libcint/lib/libcint.a"]
+[feature.et.tasks.build-et]
+cmd = "bash scripts/build/et.sh"
+depends-on = ["build-libcint"]
+inputs = ["scripts/build/et.sh", "src/eT/src/**/*", "src/eT/CMakeLists.txt", "src/eT/setup.py"]
+outputs = ["build/eT/build/eT"]
+[feature.et.tasks.test-et]
+cmd = "bash scripts/test/et.sh"
+depends-on = ["build-et"]
+
+[feature.octopus]
+platforms = ["osx-arm64", "linux-64"]
+[feature.octopus.dependencies]
+fftw = "*"
+gsl = "*"
+perl = "*"
+[feature.octopus.tasks.build-octopus]
+cmd = "bash scripts/build/octopus.sh"
+inputs = ["scripts/build/octopus.sh", "src/octopus/src/**/*", "src/octopus/CMakeLists.txt"]
+outputs = ["install/octopus/bin/octopus"]
+[feature.octopus.tasks.test-octopus]
+cmd = "bash scripts/test/octopus.sh"
+depends-on = ["build-octopus"]
+
+# ---------------------------------------------------------------- qed-linux codes (inside the container)
+[feature.exachem]
+platforms = ["linux-aarch64", "linux-64"]
+[feature.exachem.tasks.build-exachem-native]
+cmd = "bash scripts/build/exachem.sh"
+[feature.exachem.tasks.test-exachem-native]
+cmd = "bash scripts/test/exachem.sh"
+
+# ---------------------------------------------------------------- host-side tasks (no environment needed)
+[tasks.exachem-image]
+cmd = "bash containers/exachem.sh image"
+[tasks.exachem-build]
+cmd = "bash containers/exachem.sh build"
+[tasks.exachem-run]
+cmd = "bash containers/exachem.sh run"
+[tasks.hooks]
+cmd = "bash scripts/make_hooks.sh"
+
+# ---------------------------------------------------------------- environments
+[environments]
+qed-psi4 = { features = ["psi4", "hilbert", "cqed-scf", "qed-ci", "psi4polaritonic", "pdaggerq"], no-default-feature = true }
+qed-pyscf = { features = ["pyscf", "openms"], no-default-feature = true }
+qed-compiled = { features = ["compiled", "et", "octopus"], no-default-feature = true }
+qed-linux = { features = ["linux", "exachem"], no-default-feature = true }

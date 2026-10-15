@@ -4,6 +4,7 @@
 [submodule "src/cqed-scf"]
 	path = src/cqed-scf
 	url = https://github.com/FoleyLab/cqed-scf.git
+	ignore = untracked
 [submodule "src/qed-ci"]
 	path = src/qed-ci
 	url = https://github.com/FoleyLab/qed-ci.git
@@ -16,6 +17,7 @@
 [submodule "src/OpenMS"]
 	path = src/OpenMS
 	url = https://github.com/lanl/OpenMS.git
+	ignore = untracked
 [submodule "src/eT"]
 	path = src/eT
 	url = https://gitlab.com/eT-program/eT.git
