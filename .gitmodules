@@ -31,3 +31,6 @@
 [submodule "src/deps/libsdp"]
 	path = src/deps/libsdp
 	url = https://github.com/edeprince3/libsdp.git
+[submodule "src/deps/liblbfgs"]
+	path = src/deps/liblbfgs
+	url = https://github.com/edeprince3/liblbfgs.git
