@@ -19,3 +19,6 @@
 [submodule "src/eT"]
 	path = src/eT
 	url = https://gitlab.com/eT-program/eT.git
+[submodule "src/octopus"]
+	path = src/octopus
+	url = https://gitlab.com/octopus-code/octopus.git
