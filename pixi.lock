@@ -365,7 +365,7 @@ environments:
       - conda: https://conda.anaconda.org/conda-forge/linux-64/cxx-compiler-2.0.0-hdab9b82_0.conda
       - conda: https://conda.anaconda.org/conda-forge/linux-64/dkh-1.2-ha94c79b_3.conda
       - conda: https://conda.anaconda.org/conda-forge/linux-64/eigen-5.0.1-h19c2612_3.conda
-      - conda: https://conda.anaconda.org/conda-forge/linux-64/einsums-1.1.6-h9c62b20_0.conda
+      - conda: https://conda.anaconda.org/conda-forge/linux-64/einsums-1.1.5-h9c62b20_2.conda
       - conda: https://conda.anaconda.org/conda-forge/linux-64/fftw-3.3.11-nompi_h3b011a4_100.conda
       - conda: https://conda.anaconda.org/conda-forge/linux-64/fmt-12.1.0-h76c4fd7_1.conda
       - conda: https://conda.anaconda.org/conda-forge/linux-64/fortran-compiler-2.0.0-h0f4f740_0.conda
@@ -422,7 +422,7 @@ environments:
       - conda: https://conda.anaconda.org/conda-forge/linux-64/libudev1-262-h26e0ef7_2.conda
       - conda: https://conda.anaconda.org/conda-forge/linux-64/libuuid-2.42.4-hcfc3c73_0.conda
       - conda: https://conda.anaconda.org/conda-forge/linux-64/libuv-1.52.1-h280c20c_1.conda
-      - conda: https://conda.anaconda.org/conda-forge/linux-64/libxc-c-7.1.2-cpu_hed2233d_2.conda
+      - conda: https://conda.anaconda.org/conda-forge/linux-64/libxc-c-7.0.0-cpu_h75f4f88_6.conda
       - conda: https://conda.anaconda.org/conda-forge/linux-64/libxcrypt-4.4.38-h280c20c_0.conda
       - conda: https://conda.anaconda.org/conda-forge/linux-64/libxml2-16-2.15.4-hf3af7cc_1.conda
       - conda: https://conda.anaconda.org/conda-forge/linux-64/libxml2-2.15.4-h7df9aa5_1.conda
@@ -571,7 +571,7 @@ environments:
       - conda: https://conda.anaconda.org/conda-forge/osx-arm64/cxx-compiler-2.0.0-he3883d0_0.conda
       - conda: https://conda.anaconda.org/conda-forge/osx-arm64/dkh-1.2-ha5ff845_2.conda
       - conda: https://conda.anaconda.org/conda-forge/osx-arm64/eigen-5.0.1-hdb59ae0_3.conda
-      - conda: https://conda.anaconda.org/conda-forge/osx-arm64/einsums-1.1.6-he0a0643_0.conda
+      - conda: https://conda.anaconda.org/conda-forge/osx-arm64/einsums-1.1.5-he0a0643_2.conda
       - conda: https://conda.anaconda.org/conda-forge/osx-arm64/fftw-3.3.11-nompi_haf1500d_100.conda
       - conda: https://conda.anaconda.org/conda-forge/osx-arm64/fmt-12.1.0-h99e4e11_1.conda
       - conda: https://conda.anaconda.org/conda-forge/osx-arm64/fortran-compiler-2.0.0-h919a6ed_0.conda
@@ -626,7 +626,7 @@ environments:
       - conda: https://conda.anaconda.org/conda-forge/osx-arm64/libsqlite-3.54.0-hca69786_1.conda
       - conda: https://conda.anaconda.org/conda-forge/osx-arm64/libssh2-1.11.1-hbf2880b_1.conda
       - conda: https://conda.anaconda.org/conda-forge/osx-arm64/libuv-1.52.1-h1a92334_1.conda
-      - conda: https://conda.anaconda.org/conda-forge/osx-arm64/libxc-c-7.1.2-cpu_h6a072f0_2.conda
+      - conda: https://conda.anaconda.org/conda-forge/osx-arm64/libxc-c-7.0.0-cpu_h7ee64da_6.conda
       - conda: https://conda.anaconda.org/conda-forge/osx-arm64/libxml2-16-2.15.4-heb56d2d_1.conda
       - conda: https://conda.anaconda.org/conda-forge/osx-arm64/libxml2-2.15.4-h550178d_1.conda
       - conda: https://conda.anaconda.org/conda-forge/osx-arm64/libzlib-1.3.2-h8088a28_3.conda
@@ -1533,9 +1533,9 @@ packages:
   run_exports: {}
   size: 1311719
   timestamp: 1788951264833
-- conda: https://conda.anaconda.org/conda-forge/linux-64/einsums-1.1.6-h9c62b20_0.conda
-  sha256: 50bc4294db6567a0f88abdcdf83289f5cdb702b9425ac81b8ae19621036e1fe9
-  md5: fb9318f3ce8ab08bfecbb1a6dc82e47b
+- conda: https://conda.anaconda.org/conda-forge/linux-64/einsums-1.1.5-h9c62b20_2.conda
+  sha256: a4ccc1d8a1492991d910dfff3ebefd538f4287a27649949267f995ff5a952fec
+  md5: 68b3a5c7739f366d9bfe4111fae03387
   depends:
   - __glibc >=2.17,<3.0.a0
   - _openmp_mutex >=4.5
@@ -1555,9 +1555,9 @@ packages:
   purls: []
   run_exports:
     weak:
-    - einsums >=1.1.6,<1.2.0a0
-  size: 2316160
-  timestamp: 1791757223762
+    - einsums >=1.1.5,<1.2.0a0
+  size: 2274575
+  timestamp: 1791735221765
 - conda: https://conda.anaconda.org/conda-forge/linux-64/fftw-3.3.11-nompi_h3b011a4_100.conda
   sha256: 6fd5d681fba20adaca771f138ac52dbf0a52e0dc2ac31b9ce7406068d102a9a7
   md5: 0717f4eb3d18259358a1fa77edb18917
@@ -3049,6 +3049,20 @@ packages:
     - libwebp-base >=1.6.0,<2.0a0
   size: 428430
   timestamp: 1785954557217
+- conda: https://conda.anaconda.org/conda-forge/linux-64/libxc-c-7.0.0-cpu_h75f4f88_6.conda
+  sha256: 4f2678609c2cd63b20861393fc0d1635d57d6b12c374441976259b51ec3efcf2
+  md5: 3dcba84202768496e81c87db123dcc53
+  depends:
+  - __glibc >=2.17,<3.0.a0
+  - libgcc >=14
+  license: MPL-2.0
+  license_family: Other
+  purls: []
+  run_exports:
+    weak:
+    - libxc-c >=7.0.0,<8.0a0 cpu_*
+  size: 58667903
+  timestamp: 1762497118211
 - conda: https://conda.anaconda.org/conda-forge/linux-64/libxc-c-7.1.2-cpu_hed2233d_2.conda
   sha256: e036229583e319bb4cf0b54702c3d7b5774be1e4e2a9d4381b55d55b6fe4e71a
   md5: c0cbfdb711f5f8b0c87c16051d4a62ff
@@ -7185,9 +7199,9 @@ packages:
   run_exports: {}
   size: 1313767
   timestamp: 1788951329226
-- conda: https://conda.anaconda.org/conda-forge/osx-arm64/einsums-1.1.6-he0a0643_0.conda
-  sha256: 3dacc6889db9df6eeee548292fbca15e9819b790c05821209e446155c449e0a9
-  md5: b6ad4bbfc259ccf6ce4afcde0bdb7158
+- conda: https://conda.anaconda.org/conda-forge/osx-arm64/einsums-1.1.5-he0a0643_2.conda
+  sha256: e896de824bb264d69c1468d4943987c4a844f9449c4053a842d1e00a2ad994fa
+  md5: a8e64a04c8114952075df27f19e4ca23
   depends:
   - __osx >=11.0
   - cpp-argparse
@@ -7206,9 +7220,9 @@ packages:
   purls: []
   run_exports:
     weak:
-    - einsums >=1.1.6,<1.2.0a0
-  size: 986509
-  timestamp: 1791756593328
+    - einsums >=1.1.5,<1.2.0a0
+  size: 961119
+  timestamp: 1791734588856
 - conda: https://conda.anaconda.org/conda-forge/osx-arm64/fftw-3.3.11-nompi_haf1500d_100.conda
   sha256: fc6c507d7c68db156d6c8c5f6a79ca6b34c2a4c0c6222d8d4ecd0e4b97d3fd5e
   md5: 58628fdc0c614982f1dafd2116916288
@@ -8483,6 +8497,19 @@ packages:
     - libwebp-base >=1.6.0,<2.0a0
   size: 294522
   timestamp: 1785955350410
+- conda: https://conda.anaconda.org/conda-forge/osx-arm64/libxc-c-7.0.0-cpu_h7ee64da_6.conda
+  sha256: 48447188ab20b8c65d1a6c696246a56129a34ad07dcec68eae6d18a340cc9780
+  md5: 7556735c417a3cd856ea7c252eed15a7
+  depends:
+  - __osx >=11.0
+  license: MPL-2.0
+  license_family: Other
+  purls: []
+  run_exports:
+    weak:
+    - libxc-c >=7.0.0,<8.0a0 cpu_*
+  size: 55551606
+  timestamp: 1762481102221
 - conda: https://conda.anaconda.org/conda-forge/osx-arm64/libxc-c-7.1.2-cpu_h6a072f0_2.conda
   sha256: e7d882226450a69d6500b198003309adf4e4bed037899b1fe65b6b30b8c9cf05
   md5: 12441f53f0dafd21c6fc0df289d3d2e3

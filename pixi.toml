@@ -21,6 +21,8 @@ platforms = ["osx-arm64", "linux-64"]
 [feature.psi4.dependencies]
 python = "3.11.*"
 psi4 = "==1.10.2"        # hilbert is built against this Psi4: rebuild hilbert whenever pixi.lock changes psi4
+einsums = "==1.1.5"      # psi4 1.10.2's core.so needs einsums::random_engine, missing in 1.1.6 (loose upstream pin)
+libxc-c = "==7.0.0"      # same as the known-good hilbert-dev env
 numpy = ">=2,<3"
 scipy = "*"
 pytest = "*"
