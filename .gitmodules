@@ -28,3 +28,6 @@
 [submodule "src/TAMM"]
 	path = src/TAMM
 	url = https://github.com/NWChemEx/TAMM.git
+[submodule "src/deps/libsdp"]
+	path = src/deps/libsdp
+	url = https://github.com/edeprince3/libsdp.git
