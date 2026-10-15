@@ -18,6 +18,8 @@ requires-pixi = ">=0.82"
 # ---------------------------------------------------------------- base features (one per stack)
 [feature.psi4]
 platforms = ["osx-arm64", "linux-64"]
+[feature.psi4.activation.env]
+PYTHONPYCACHEPREFIX = "$PIXI_PROJECT_ROOT/build/pycache"   # keep __pycache__ out of src/
 [feature.psi4.dependencies]
 python = "3.11.*"
 psi4 = "==1.10.2"        # hilbert is built against this Psi4: rebuild hilbert whenever pixi.lock changes psi4
@@ -30,6 +32,8 @@ rsync = "*"
 
 [feature.pyscf]
 platforms = ["osx-arm64", "linux-64"]
+[feature.pyscf.activation.env]
+PYTHONPYCACHEPREFIX = "$PIXI_PROJECT_ROOT/build/pycache"   # keep __pycache__ out of src/
 [feature.pyscf.dependencies]
 python = "3.12.*"
 pyscf = "==2.11.0"
