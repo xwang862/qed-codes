@@ -210,6 +210,8 @@ cmd = "bash containers/exachem.sh image"
 cmd = "bash containers/exachem.sh build"
 [tasks.exachem-run]
 cmd = "bash containers/exachem.sh run"
+[tasks.exachem-smoke]
+cmd = "bash containers/exachem.sh smoke"
 [tasks.hooks]
 cmd = "bash scripts/make_hooks.sh"
 
