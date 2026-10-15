@@ -61,6 +61,7 @@ python = "3.12.*"
 gcc = "14.*"
 gxx = "14.*"
 gfortran = "14.*"
+binutils = "*"           # unprefixed ar/ranlib/ld (the image has none; CMake looks for `ar` next to plain gcc)
 cmake = ">=3.26,<4"      # doctest 2.4.11 / gau2grid 2.0.6 (fetched by CMakeBuild) declare cmake_minimum_required < 3.5
 make = "*"
 ninja = "*"
