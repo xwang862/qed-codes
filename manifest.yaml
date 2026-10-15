@@ -63,7 +63,10 @@ codes:
     qed_methods: [CQED-RHF reference, QED-CIS, QED-CASCI, QED-FCI, SA-QED-CASSCF, analytic gradients]
     conventions: length gauge; coherent-state or photon-number basis; number_of_photons truncation
     status: built (Accelerate); own test test_lih_fci_sto3g_rdm_builds_no_cavity passed; smoke passed (2026-10-15)
-    notes: uses stock Psi4 (not a fork), so it shares the env with hilbert. The repo ships prebuilt .o/.so files; they are rebuilt in the copy.
+    notes: uses stock Psi4 (not a fork), so it shares the env with hilbert. CONFLICT - both qed-ci and psi4polaritonic
+      ship a top-level module helper_cqed_rhf.py and both are on PYTHONPATH in qed-psi4; `import helper_cqed_rhf` (also
+      inside qed-ci's helper_PFCI) resolves to whichever comes first (currently psi4polaritonic). Scripts using either must
+      put their own directory first on sys.path (the smoke scripts do). The repo ships prebuilt .o/.so files; they are rebuilt in the copy.
 
   psi4polaritonic:
     url: https://github.com/FoleyLab/psi4polaritonic
