@@ -127,6 +127,11 @@ On an HPC cluster: after installing, run `pixi run hooks`, then point the user t
 * **Psi4 1.10.2** needs `einsums 1.1.5`; 1.1.6 breaks `import psi4`. **Stock PySCF 2.11.0** needs
   `numpy < 2.4`. Both are pinned in `pixi.toml`.
 * **conda-forge compilers** no longer export `CC`/`CXX`/`FC`. The build scripts default to `cc`/`c++`/`gfortran`.
+* On **linux-64**, qed-ci builds with `BACKEND=openblas` and needs `cblas.h`. `libopenblas` ships no headers, so
+  the qed-ci feature adds `openblas` for linux-64 (macOS uses Accelerate).
+* **git** comes from the env (hilbert, pdaggerq, qed-linux) for CMake FetchContent, because clusters may lack a system
+  git or keep it in a module.
+* `scripts/job.py` creates `logs/` itself (it is untracked, so a fresh clone has none).
 * On **macOS**:
   * plain `make` needs `SDKROOT` (qed-ci);
   * Octopus needs GNU `cpp` and has its SPARSKIT lookup disabled;

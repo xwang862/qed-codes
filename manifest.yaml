@@ -57,7 +57,7 @@ codes:
     pin: 747212217d41ae86d58196d9c50cfce28ef286cb     # main, 2026-06-11
     env: qed-psi4
     license: GPL-3.0
-    build: pixi run -e qed-psi4 build-qed-ci (rsync src/qed-ci -> build/qed-ci, make there; macOS BACKEND=accelerate, Linux BACKEND=openblas)
+    build: pixi run -e qed-psi4 build-qed-ci (rsync src/qed-ci -> build/qed-ci, make there; macOS BACKEND=accelerate, Linux BACKEND=openblas with cblas.h from the conda openblas package)
     test: pixi run -e qed-psi4 test-qed-ci
     runtime: PYTHONPATH build/qed-ci/src
     qed_methods: [CQED-RHF reference, QED-CIS, QED-CASCI, QED-FCI, SA-QED-CASSCF, analytic gradients]

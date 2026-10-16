@@ -73,6 +73,7 @@ def run(args):
         return 0
     cmd = args.command
     log = os.path.join(ROOT, "logs", args.step + ".log")
+    os.makedirs(os.path.dirname(log), exist_ok=True)   # logs/ is untracked: absent in a fresh clone
     t0 = time.time()
     with open(log, "w", buffering=1) as fh:
         fh.write("# %s  %s\n# cmd: %s\n" % (args.step, now(), " ".join(cmd)))

@@ -14,6 +14,8 @@ if [ "$(uname -s)" = Darwin ]; then
   export SDKROOT=${SDKROOT:-$(xcrun --sdk macosx --show-sdk-path 2>/dev/null || echo /Library/Developer/CommandLineTools/SDKs/MacOSX.sdk)}
   make CC="$CC" BACKEND=accelerate
 else
+  # cblas.h comes from the conda `openblas` package (pixi.toml: feature.qed-ci, linux-64)
+  [ -f "$CONDA_PREFIX/include/cblas.h" ] || { echo "no $CONDA_PREFIX/include/cblas.h: openblas missing from the env"; exit 1; }
   make CC="$CC" BACKEND=openblas OPENBLAS_PREFIX="$CONDA_PREFIX"
 fi
 ls -l src/cfunctions.so
