@@ -1,8 +1,7 @@
 # qed-codes
 
-This repo collects external ab initio cavity-QED codes. Each is pinned, reproducible, and built and
-smoke-tested, so that results from **qedpy** (our periodic/molecular QED-HF, MP2, CIS and CCSD code) can be
-compared with independent implementations. The repo holds the build recipes and environments, not the codes
+This repo collects open-source ab initio cavity-QED codes. Each is pinned, reproducible, and built and
+smoke-tested. The repo holds the build recipes and environments, not the codes
 themselves: every code is a git submodule pinned to one commit.
 
 | code | upstream | env | what it offers (cavity QED) |
