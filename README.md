@@ -35,15 +35,13 @@ scripts/
   test/<code>.sh         each package's own shortest test (pixi tasks test-<code>)
   activate/<code>.sh     PYTHONPATH entries, sourced on activation
   fetch_all.sh           plain-git fallback: clone every code at its pin (no pixi needed)
-  make_hooks.sh          writes hooks/<env>.sh (pixi shell-hook) for Lmod
   add_submodules.sh      one-time submodule setup (history; not needed after cloning)
 smoke/                   common smoke case (common.py) and one <code>_smoke.* per code
 results/<code>.json      smoke-test numbers and conventions per code
 containers/              Dockerfile and host driver for the Linux (ExaChem) container
-modulefiles/qed-code/    example Lmod modulefiles, one per env (not installed anywhere)
 patches/                 source patches, if ever needed (none so far)
 # generated, not tracked:
-.pixi/  build/  install/  hooks/  logs/  status.json  STATUS.md  smoke/work/
+.pixi/  build/  install/  logs/  status.json  STATUS.md  smoke/work/
 ```
 
 ## Environments
@@ -184,7 +182,8 @@ pixi shell -e qed-psi4
   Put the one you want first on `sys.path` (see the smoke scripts).
 * eT: `python build/eT/build/eT_launch.py input.inp`.
 * Octopus: `install/octopus/bin/octopus` (reads `inp` in the current directory).
-* ExaChem: `/work/install/exachem/bin/ExaChem input.json` inside the container (`mpirun -n 2`).
+* ExaChem: `/work/install/exachem/bin/ExaChem input.json` inside the container, or
+  `$EXACHEM_WORK/install/exachem/bin/ExaChem` for a native linux-64 build (`mpirun -n 2`).
 
 ## Tests and smoke tests
 
@@ -192,7 +191,8 @@ pixi shell -e qed-psi4
 pixi run -e qed-psi4 test-hilbert
 ```
 Similarly `test-cqed-scf`, `test-qed-ci`, `test-psi4polaritonic` and `test-pdaggerq` in `qed-psi4`;
-`test-openms` in `qed-pyscf`; `test-et` and `test-octopus` in `qed-compiled`; `pixi run exachem-run` for ExaChem.
+`test-openms` in `qed-pyscf`; `test-et` and `test-octopus` in `qed-compiled`; `pixi run exachem-run` for ExaChem
+(`pixi run -e qed-linux test-exachem-native` on linux-64).
 These run each package's own shortest QED test in `smoke/work/` (nothing is written into `src/`).
 
 Our smoke tests use one common case:
@@ -207,17 +207,22 @@ pixi run -e qed-psi4 python smoke/hilbert_smoke.py
 Results go to `results/<code>.json`, with the fields code, commit, env, method, basis, lambda, omega, e_hf,
 e_tot, conventions and notes. Octopus and pdaggerq run their own QED examples instead.
 
-## Cluster use (Lmod)
+## Cluster use
 
-On the cluster:
-1. Clone recursively.
-2. Install the envs and build.
-3. Run `pixi run hooks`. This writes `hooks/<env>.sh` with absolute paths, so regenerate it after every
-   install or update.
-4. Copy `modulefiles/qed-code/<env>.lua` into a `MODULEPATH` directory.
-5. Set `QED_CODES_ROOT` if the clone is not at `~/Programs/qed-codes`.
+No modulefiles: the pixi environments are the only activation mechanism. On a linux-64 cluster:
+1. Install pixi as a user binary (`~/.pixi/bin`) and clone recursively. Set `PIXI_CACHE_DIR` to scratch to keep
+   the package cache off `$HOME`.
+2. Install the envs and build as above (ExaChem natively, with `EXACHEM_WORK`), through `scripts/job.py`.
+   Set `JOBS` to what the login node allows.
+3. In job scripts, call the env directly from any directory, with a clean Python path so a system PySCF or
+   other modules cannot leak in:
+   ```bash
+   env -u PYTHONPATH -u PYTHONHOME pixi run --manifest-path /path/to/qed-codes -e qed-psi4 python input.py
+   ```
+   For MPI codes (ExaChem; hilbert with TiledArray), use the env's own `mpirun` inside the allocation, and
+   don't load a system MPI module.
 
-The modules belong to the family `qed-code`, so only one can be loaded at a time.
+The envs bring their own `git` for CMake FetchContent, so no system git or git module is needed.
 
 ## Rules for changes
 
@@ -226,5 +231,5 @@ The modules belong to the family `qed-code`, so only one can be loaded at a time
 * Changing a pin: check out the new commit in `src/<code>`, `git add src/<code>`, then update `manifest.yaml`
   and rebuild.
 * Changing an environment: edit `pixi.toml`, run `pixi lock`, then commit both files. Rebuild hilbert if Psi4
-  changed, and run `pixi run hooks`.
+  changed.
 * Commit after each coherent step. The repo is meant to be moved with `git clone --recursive`.

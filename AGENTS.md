@@ -99,8 +99,9 @@ ExaChem (Linux only):
 * On linux-64, use `pixi install -e qed-linux --frozen && pixi run -e qed-linux build-exachem-native`, with
   `EXACHEM_WORK` set to a writable build location.
 
-On an HPC cluster: after installing, run `pixi run hooks`, then point the user to `modulefiles/qed-code/*.lua`
-(Lmod `source_sh` of `hooks/<env>.sh`). Hooks contain absolute paths, so regenerate them after every install.
+On an HPC cluster: there are no modulefiles; the pixi envs are the only activation. Point the user to
+`pixi run --manifest-path <qed-codes> -e <env> ...` with `PYTHONPATH`/`PYTHONHOME` unset (README, "Cluster use").
+Respect the login node's thread budget (`JOBS`).
 
 ## Verifying an install
 

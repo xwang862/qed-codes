@@ -2,7 +2,6 @@
 /.pixi/
 /build/
 /install/
-/hooks/
 /logs/
 /status.json
 /STATUS.md

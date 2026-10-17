@@ -217,8 +217,6 @@ cmd = "bash containers/exachem.sh build"
 cmd = "bash containers/exachem.sh run"
 [tasks.exachem-smoke]
 cmd = "bash containers/exachem.sh smoke"
-[tasks.hooks]
-cmd = "bash scripts/make_hooks.sh"
 
 # ---------------------------------------------------------------- environments
 [environments]
