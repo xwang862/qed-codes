@@ -131,6 +131,8 @@ On an HPC cluster: after installing, run `pixi run hooks`, then point the user t
   the qed-ci feature adds `openblas` for linux-64 (macOS uses Accelerate).
 * **git** comes from the env (hilbert, pdaggerq, qed-linux) for CMake FetchContent, because clusters may lack a system
   git or keep it in a module.
+* **ExaChem native on linux-64:** HDF5 (fetched by TAMM) needs `zlib.h`; conda gcc does not search `/usr/include`,
+  so `zlib` is in the `linux` feature.
 * `scripts/job.py` creates `logs/` itself (it is untracked, so a fresh clone has none).
 * On **macOS**:
   * plain `make` needs `SDKROOT` (qed-ci);

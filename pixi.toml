@@ -66,6 +66,7 @@ gcc = "14.*"
 gxx = "14.*"
 gfortran = "14.*"
 binutils = "*"           # unprefixed ar/ranlib/ld (the image has none; CMake looks for `ar` next to plain gcc)
+zlib = "*"               # zlib.h + libz.so for HDF5 (fetched by TAMM); conda gcc cannot see a host /usr/include/zlib.h
 cmake = ">=3.26,<4"      # doctest 2.4.11 / gau2grid 2.0.6 (fetched by CMakeBuild) declare cmake_minimum_required < 3.5
 make = "*"
 ninja = "*"
